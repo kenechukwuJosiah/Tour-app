@@ -4,13 +4,13 @@ const dotenv = require('dotenv');
 dotenv.config({ path: './config.env' });
 const app = require('./app');
 
-const DB = process.env.DATABASE.replace(
-  '<PASSWORD>',
-  process.env.DATABASE_PASSWORD
-);
+// const DB = process.env.DATABASE.replace(
+//   '<PASSWORD>',
+//   process.env.DATABASE_PASSWORD
+// );
 
 mongoose
-  .connect(DB, {
+  .connect(process.env.DATABASE_LOCAL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
@@ -20,7 +20,7 @@ mongoose
     console.log('DB connection successful');
   })
   .catch(() => {
-    console.log('ERROR');
+    console.log('DB ERROR: Could not connect');
   });
 // console.log(con.connections);
 // console.log(app.get('env'));
