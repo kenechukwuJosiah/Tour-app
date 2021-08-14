@@ -97,3 +97,7 @@ Applicaiton logic vs Business logic
 Application: These are code that is only concerned about the application's implementations like managing request and responses. It serves a bride btw model and view layer so they don't overlap.
 
 Business logic: They are code that actully deals or solves business problem we set out to solve or any code related to that e.g created a new resources in our database like users etc, checking if user password is correct, validating user input data, ensuring only users who bought a resource can review it. 
+
+//////////////////////////////////////////////////
+//Mongodb Aggregation pipeline
+This is mongodb framework for data aggregation i.e defining a pipeline where all the documents from a certain collection go through to be proccessed step by step in order to get aggregated result.
