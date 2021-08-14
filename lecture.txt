@@ -101,3 +101,18 @@ Business logic: They are code that actully deals or solves business problem we s
 //////////////////////////////////////////////////
 //Mongodb Aggregation pipeline
 This is mongodb framework for data aggregation i.e defining a pipeline where all the documents from a certain collection go through to be proccessed step by step in order to get aggregated result.
+
+///////////////////////////////////////////////
+//Mongoose middleware
+#Four types of middleware in mongoose are
+Document, Aggregate, Model and Query middleware.
+1) Docuemnt middleware 
+This is usually running a function btw the save command the when the document is saved in the database i.e middleware that can act on currently processed document. 
+This middleware is defined on the schema because the schema is like a blueprint for our document e.g. nameSchema.pre('save', function(next){});
+with the .pre() method and passing the save argument the middleware runs before save and create. 
+
+The .post() middleware function is executed after all .pre() middleware function is executed. This MidleWare also gets access to the created document e.g. nameSchema.post('save', function(document, next){})
+
+NOte: just like express middleware the document middleware gets access to the next() function. 
+
+This mongoose middlewares only runs for .save() and .create() methods and does not work for any kind of update like .updateMany() or .updateOne()

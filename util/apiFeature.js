@@ -5,12 +5,12 @@ class APIFeatures {
   }
 
   filter() {
-    //filtering
+    //filtering tours
     const queryObj = { ...this.queryString };
     const excludedFeilds = ['page', 'sort', 'limit', 'fields'];
     excludedFeilds.forEach((el) => delete queryObj[el]);
 
-    // 1B) Advanced Filtering
+    // 1B) Filtering with query obj
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
 
@@ -19,7 +19,7 @@ class APIFeatures {
   }
 
   sort() {
-    // 2) Advanced Sorting
+    // 2) Sorting
     if (this.queryString.sort) {
       const sortBy = this.queryString.sort.split(',').join(' ');
       this.query = this.query.sort(sortBy);
