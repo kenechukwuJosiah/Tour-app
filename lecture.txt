@@ -20,7 +20,7 @@ Note: put and patch http method are similar but the put is used to update a whol
 
 The four http method that should be responded to while building a restful api are post, get, put, patch, delete.
 
-JSON: is light weight data interchange format which heavly used by web api or sending data btw server and the clients.
+JSON: is light weight data interchange format which is heavly used by web api or sending data btw server and the clients.
 
 #Statless Restful api: All state is handled on the client. A state is simply a piece of data that will change over time. So if all state will be handled in the client each request should contain everything needed to proccess the page
 
@@ -29,7 +29,7 @@ Note: the url parameter can be accessed from req.params. The parameter is a varr
 //////////////////////////////////////////////
 //MidleWare, MidleWare and reqponse request cycle
 They are function that are being executed btw the req and res cycle. the req and res object pass through this middleware i.e you can access the middleware in any req handle. 
-There can be more than one middleware in our middleware stack. use the use() method to create a middleware in your app. After each middleware is adviceable to use the next() method in other for the proccess to continue violation of this convention will leave the proccess stuck and that will be a very bad user experience for the user. if the MidleWare comes after the request handler the middleware won't work on that request cycle because by sending back data with the .json() method or .send() method the request resoponse method. 
+There can be more than one middleware in our middleware stack. use the use() method to create a middleware in your app. After each middleware its adviceable to use the next() method in other for the proccess to continue. violation of this convention will leave the proccess stuck and that will be a very bad user experience for the user. if the MidleWare comes after the request handler the middleware won't work on that request cycle because by sending back data with the .json() method or .send() method the request resoponse method. 
 
 #Param middleware: this is a special type of middleware function that only run for certain parameter i.e url parameter. the middleware function takes four parameters which are the req object, res object, next() method and the param value
 
@@ -37,8 +37,6 @@ Note: 400 status code stands for bad request or invalid request.
 
 ////////////////////////////////////
 //Varriable Environment
-
-
 
 ////////////////////////////////////
 //Mongo db
@@ -67,7 +65,7 @@ e.g. updateOne:- db.collection.updateOne({filter}, {$set: {what to update in key
 
 e.g. updateMany:- db.collection.updateMany({filter})
 
-Note: you can aswell replace a document in your collection using the replaceOne and replaceMany using the same procedure an in updating.
+Note: you can aswell replace a document in your collection using the replaceOne and replaceMany using the same procedure as in updating.
 
 Deleting document
 Just like every other crud operator you can deleteOne or deleteMany documetns. e.g. db.collection.deleteOne(filter); db.collection.deleteMany(filter); to your whole collection use deleteMany({});
@@ -80,16 +78,16 @@ Mongoose schema:- This is a feature provided by mongoose to model our data by de
 
 Mongoose model:- Its like a wrapper for schema, providing an Interface to the database for CRUD operations.
 
-mongoose is all about model and a model like a blueprint for create a docuemnt in our mongodb database.
+mongoose is all about model and a model is like a blueprint for creating a docuemnt in our mongodb database.
 
 ////////////////////////////////////////////////
 //BACKEND ARCHITECTURE 
 #MVC: Modle view controller
-The contains three layers which are the model layer, the controller layer, and the view lay.
+This contains three layers which are the model layer, the controller layer, and the view lay.
 
 The model layer takes care of the business logic.
 
-The work of controller layer to handle application logic which is handling request, interact with model and send back responses to the client.
+The work of controller layer is to handle application logic which is handling request, interact with model and send back responses to the client.
 
 The view layer takes care of the graphical interface i.e when dealing with server side rendered website. This is where the website template is being stored like .pug file.
 
@@ -116,3 +114,24 @@ The .post() middleware function is executed after all .pre() middleware function
 NOte: just like express middleware the document middleware gets access to the next() function. 
 
 This mongoose middlewares only runs for .save() and .create() methods and does not work for any kind of update like .updateMany() or .updateOne()
+
+2)
+The Query middleware
+This middleware hoods before or after a query is executed. It uses the same function as document middleware but the only differnce is in the event name which in this case is find and not save.
+
+3)
+The Aggregation middleware
+This middleware allow us to add hooks before and after aggregation happens
+
+///////////////////////////////
+//Error handling
+With express we can handle error from any where in our app by creating a global error handling middleware e.g. 
+app.use(err, req, res, next){
+  err.statusCode = err.statusCode || 500;
+  err.status = err.status || 'error';
+  res.status(err.statusCode).json({
+    status: err.status,
+    message: err.message,
+  });
+}
+whenever we pass in four arguments in the use method express automatically detect the middleware as an error handling middleware. To make our errors avaliable to the error handling middleware use the next() method and pass in the err object which to shorcircuit all other middlewares and move directly to the error handling middleware.

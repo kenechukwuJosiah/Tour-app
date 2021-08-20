@@ -1,11 +1,12 @@
 {
-  "name": "starter",
+  "name": "Natours App",
   "version": "1.0.0",
   "description": "Natours tour app",
   "main": "app.js",
   "scripts": {
     "start": "nodemon server.js",
-    "start:prod": "SET NODE_ENV=production & nodemon server.js"
+    "start:prod": "SET NODE_ENV=production & nodemon server.js",
+    "debug": "ndb server.js"
   },
   "keywords": [],
   "author": "Kenechukwu Josiah",
@@ -15,7 +16,8 @@
     "express": "^4.17.1",
     "mongoose": "^5.13.6",
     "morgan": "^1.10.0",
-    "slugify": "^1.6.0"
+    "slugify": "^1.6.0",
+    "validator": "^13.6.0"
   },
   "devDependencies": {
     "eslint": "^7.32.0",
@@ -29,6 +31,6 @@
     "prettier": "^2.3.2"
   },
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=10.0.0"
   }
 }
