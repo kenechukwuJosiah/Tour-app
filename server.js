@@ -3,7 +3,7 @@ const dotenv = require('dotenv');
 
 // Handles sync unhandle exception
 process.on('uncaughtException', (err) => {
-  console.log('App shoting down...');
+  console.log('App shotting down...');
   console.log(err.name, err.message);
   process.exit();
 });

@@ -1,12 +1,12 @@
-const express = require('express');
-const fs = require('fs');
-const morgan = require('morgan');
+// const express = require('express');
+// const fs = require('fs');
+// const morgan = require('morgan');
 
-const app = express();
+// const app = express();
 
 //Midelware which is a function that can modify incoming data. it stands btw the req and res object
-app.use(morgan('dev'));
-app.use(express.json());
+// app.use(morgan('dev'));
+// app.use(express.json());
 
 /*
 app.get('/', (req, res) => {
@@ -27,9 +27,12 @@ app.post('/', (req, res) => {
 // app.patch('/api/v1/tours/:id', updateTour);
 // app.delete('/api/v1/tours/:id', deleteTour);
 
-app.use('/api/v1/tours', tourRoute);
-app.use('/api/v1/users', userRoute);
+// app.use('/api/v1/tours', tourRoute);
+// app.use('/api/v1/users', userRoute);
 
-app.listen(3000, () => {
-  console.log('App running on port 3000');
-});
+// app.listen(3000, () => {
+//   console.log('App running on port 3000');
+// });
+
+console.log(new Date(1629568504) < new Date('2020-3-20').getTime());
+console.log(new Date(1629568504));

@@ -135,3 +135,64 @@ app.use(err, req, res, next){
   });
 }
 whenever we pass in four arguments in the use method express automatically detect the middleware as an error handling middleware. To make our errors avaliable to the error handling middleware use the next() method and pass in the err object which to shorcircuit all other middlewares and move directly to the error handling middleware.
+
+///////////////////////////////////////
+//Securing user password
+NB: never leave a user password as plain text in the database.
+instead we encrypt it e.g. this.password = await bcrypt.hash(this.password, 12);
+
+encrypting the password is usually done in the pre hook middle before password is actully saved to the database.
+
+
+//////////////////////////////////////////////
+//How JWT works with Authentication
+json web token is a stateless solution for authentication.
+when a user is logged in the server checks if the user exists and if password is correct then it creates a unique JWT for the user which is sent back to the user. This JWT is like a passport that the user uses to access private datas like changing password or editing user profile by send the JWT along with a request like stated above. When this request hits the server it verifies if its valid i.e if the user is how it clams to be if the JWT is valid then the data requested for is sent back to the user and stored as a cookie or localstorage else access will be denied. This whole process is more secured under the https protocol which is the protected protocol for sending and recieving data btw the client and the server.
+
+How JWT works 
+JWT is made of three parts the header, the payload, and the signature.
+The header is a metadata about the token itself i.e JWT
+
+The payload is the data we encode into the token i.e the data we are transfering. The size of the payload is proportional to the size fo the JWT. The header and the payload are not encrypted.
+
+The signature is where the magic happens. The signature is created using the header, the payload and the secret created at the server. The signature will process the signing of the JWT using the those info avaliable in the signature. 
+
+During the signing process the header, payload and the secret are used to create a unique signature together with the header and payload form JWT which is sent to the client. Once the client gets the JWT it will verify it to check if the user is valid i.e checking if no one modified the payload and the header of the JWT. One the JWT reaches the verification process the header and the payload are used to create a test signature which is used to compire the original signature to test if the header and the payload are not modified i.e being change and if the test signature is equal the to the original signature then access will be granted else there won't be access. This whole process is made possible with the help of the secret section of the JWT which can't be tempered with because it's encrypted. 
+NB: without the secret one will be able to manupulate the JWT data, 
+
+////////////////////////////////////////
+//Authorization
+Which is verifying if a certain user has the right to access or interact with certain resource. And this is acheived with middleware i.e writing a middleware function that will check the role of the currentuser.
+
+////////////////////////////////////////
+//Password Reset 
+email to forget passowrd route => returns mail + link => password reset page.
+
+////////////////////////////////////////
+//Security Best practice
+Attacks that are likely to happen are
+1) Compropmised DataBase where an attacker gains access to your database. To prevent this always Strongly encrypt password with salt and hash (e.g bcrypt) and Strongly encrypt password reset token(sha 256) aswell.
+2) Brute Force Attacks:- This is a situation where an attacker trys millions of login password. to prevent use bcrypt to make login slow requests, implement rate limiting i.e how many requests that comes in certain ammount of time and implement maxium login attempts aswell.
+3) Cross-site-scripting (xss) Attacks:- This is a situation where the attacker injects a mallisious script into our site to gain access expecially in the case of the local storage which in why we should never store jwt in localstorage.
+preventions: Store JWT in Httpsonly cookies, sanitize user input data and set special http header(e.g helmet package)
+4)DOS(Denial of service) Attacks:- A situation where the attacker makes so many request that the server crashes and the webapp is longer avaliable.
+preventions: implement rate limiting(express-rate-limit), limit body payload and avoid evil reg expression.
+4) NOSQL Query Injection:- A situation where attacker injects some query that might be true. 
+preventions: Use mongoose for mongoDB(because of schematypes), sanitize user input data
+5) Always use https
+6) Create random password reset tokens with expiry database
+7) Deny access to JWT after password change
+8) Don't commit sensitive config data to git
+9) Don't send error details to the client
+10) Prevent *Cross site request Forgery* (csurf package)
+11) Require re-auth before a high-value action
+12) Implement a blacklist of unthrust JWT
+13) Confirm user email address after first creating account 
+14) Keep user logged in with refresh token (the user will be logged in forever).
+15) Implement two-factor auth
+16) Prevent parameter pollution (causes error if our applicaition is not prepared for it).
+
+////////////////////////////////////////////
+//Cookies 
+This is small piece of text that a server can send to client. This client automatically stores the cookies that it recieved and automatically sends it back in all future request to the same server.  
+
