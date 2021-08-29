@@ -10,10 +10,12 @@ const ErrorHandler = require('./util/errHandler');
 const errControler = require('./controlers/errorControler');
 const tourRouter = require('./routes/tourRouter');
 const userRouter = require('./routes/usersRouter');
+const reviewRouter = require('./routes/reviewRouter');
 
 const app = express();
 
 //1) Global middleware
+
 //set Security Http header
 app.use(helmet());
 
@@ -69,11 +71,9 @@ app.use((req, res, next) => {
 // 3) Base Routes
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/reviews', reviewRouter);
 
 app.all('*', (req, res, next) => {
-  // const err = new Error(`Can't find ${req.originalUrl} in this server`);
-  // err.status = 'fail';
-  // err.statusCode = 404;
   next(new ErrorHandler(`Can't find ${req.originalUrl} in this server`, 404));
 });
 

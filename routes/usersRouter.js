@@ -7,6 +7,7 @@ const {
   getUser,
   updateMe,
   deleteMe,
+  getMe,
 } = require('../controlers/usersControler');
 
 const {
@@ -16,28 +17,28 @@ const {
   resetPassword,
   updatePassword,
   protected,
+  restrictTo,
 } = require('../controlers/authControler');
 
 const router = express.Router();
 
 router.post('/signup', signup);
 router.post('/login', login);
-
 router.post('/forgetpassword', forgetPassword);
 router.patch('/resetpassword/:token', resetPassword);
 
-router.patch('/updateme', protected, updateMe);
+//This middleware runs before all the middleware below
+router.use(protected);
 
-router.patch('/updatepassword', protected, updatePassword);
+router.get('/me', getMe, getUser);
+router.patch('/updateme', updateMe);
+router.patch('/updatepassword', updatePassword);
+router.delete('/deleteme', deleteMe);
 
-router.delete('/deleteme', protected, deleteMe);
+//All the middleware under this middle are restircted to the admin only
+router.use(restrictTo('admin'));
 
 router.route('/').get(getAllUsers).post(createUser);
-
-router
-  .route('/:id')
-  .patch(updateUser)
-  .delete(protected, deleteUser)
-  .get(getUser);
+router.route('/:id').patch(updateUser).delete(deleteUser).get(getUser);
 
 module.exports = router;

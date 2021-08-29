@@ -40,7 +40,7 @@ const userSchema = new mongoose.Schema({
     enum: ['user', 'guide', 'lead-guide', 'admin'],
     default: 'user',
   },
-  passwordChangedAt: Date,
+  passwordChangedAt: { type: Date, default: 0 },
   passwordResetToken: String,
   passwordResetExpires: Date,
   active: {
@@ -51,7 +51,7 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.pre('save', async function (next) {
-  // Run the function if password is modified
+  // Run the function  if password is modified
   if (!this.isModified('password')) return next();
 
   // Hashed the password

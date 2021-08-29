@@ -45,6 +45,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     passwordChangedAt: req.body.passwordChangedAt,
   });
 
+  //response
   createSendToken(newUser, 201, res);
 });
 
@@ -156,12 +157,11 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     .update(req.params.token)
     .digest('hex');
 
+  // 2) if token is not expired, and there is user, set the new password
   const user = await User.findOne({
     passwordResetToken: hashedToken,
     passwordResetExpires: { $gt: Date.now() },
   });
-
-  // 2) if token is not expired, and there is user, set the new password
 
   if (!user)
     return next(new ErrorHandler('Token is invalid or has expired', 400));
