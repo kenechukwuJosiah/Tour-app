@@ -255,3 +255,6 @@ TIPS:
 ///////////////////////////////////////////////////
 //Geospatial location
 Mongodb supports geospatial data which is datas that discribes or identify  places on earth using logitude and latitude.
+
+IMPROVING READ PERFORMANCE WITH INDEXES
+Reading document from a big database can be time consuming so indexing is the best to improve performance in reading data. with indexing all the indexed resources id are stored inside the index created. This makes the read performance better.

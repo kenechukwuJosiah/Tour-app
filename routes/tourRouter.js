@@ -9,6 +9,8 @@ const {
   aliasTopCourse,
   getTourStat,
   getMonthlyPlan,
+  getToursWithin,
+  getDistances,
 } = require('../controlers/tourControler');
 const reviewRouter = require('./reviewRouter');
 
@@ -18,6 +20,12 @@ router.use('/:tourId/reviews', reviewRouter);
 
 // router.param('id', checkId);
 router.route('/tour-stat').get(getTourStat);
+
+router
+  .route('/tours-within/:distance/center/:latlng/unit/:unit')
+  .get(getToursWithin);
+
+router.route('/center/:latlng/unit/:unit').get(getDistances);
 
 router
   .route('/get-monthly-plan/:year')

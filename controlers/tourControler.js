@@ -1,6 +1,7 @@
 const Tour = require('../model/tourModel');
 const catchAsync = require('../util/catchAsync');
 const factory = require('./handlerFactroy');
+const ErrorHandler = require('../util/errHandler');
 
 exports.aliasTopCourse = (req, res, next) => {
   req.query.limit = '5';
@@ -10,14 +11,76 @@ exports.aliasTopCourse = (req, res, next) => {
 };
 
 exports.getAllTours = factory.getAll(Tour);
-
 exports.getTour = factory.getOne(Tour, { path: 'reviews' });
-
 exports.createTour = factory.createOne(Tour);
-
 exports.updateTour = factory.updateOne(Tour);
-
 exports.deleteTour = factory.deleteOne(Tour);
+
+// /tours-within/:distance/239/center/20,-50/unit/km
+exports.getToursWithin = catchAsync(async (req, res, next) => {
+  const { distance, unit, latlng } = req.params;
+  const [lat, lng] = latlng.split(',');
+
+  const radius = unit === 'mi' ? distance / 3963.2 : distance / 6378.1;
+  if (!lat || !lng)
+    return next(
+      new ErrorHandler(
+        'Please provide latitude and longitude in the format lat, lng',
+        400
+      )
+    );
+
+  // console.log(distance, unit, lat, lng);
+  const tours = await Tour.find({
+    startLocation: { $geoWithin: { $centerSphere: [[lng, lat], radius] } },
+  });
+
+  res.status(200).json({
+    status: 'success',
+    results: tours.length,
+    data: tours,
+  });
+});
+
+// /tours/center/34.213485, -118.632622/unit/km
+exports.getDistances = catchAsync(async (req, res, next) => {
+  const { unit, latlng } = req.params;
+  const [lat, lng] = latlng.split(',');
+  const multiplier = unit === 'mi' ? 0.000621371 : 0.001;
+  if (!lat || !lng)
+    return next(
+      new ErrorHandler(
+        'Please provide latitude and longitude in the format lat, lng',
+        400
+      )
+    );
+
+  const distances = await Tour.aggregate([
+    {
+      //always has to be the first stage for geospeticial location aggregation
+      $geoNear: {
+        near: {
+          type: 'Point',
+          coordinates: [+lng, +lat],
+        },
+        distanceField: 'distance',
+        distanceMultiplier: multiplier,
+      },
+    },
+    {
+      $project: {
+        distance: 1,
+        name: 1,
+      },
+    },
+  ]);
+
+  res.status(200).json({
+    status: 'success',
+    results: distances.length,
+    data: distances,
+  });
+});
 
 exports.getTourStat = catchAsync(async (req, res, next) => {
   const stats = await Tour.aggregate([
