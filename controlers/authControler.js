@@ -17,12 +17,13 @@ const createSendToken = (user, statuscode, res) => {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
     ),
-    //secure: false, makes it secure via https,
-    httpOnly: true, //makes it impossible for the cookie to be modified in any way by the browser
+    //secure: false, // makes it secure via https,
+    secure: process.env.NODE_ENV === 'production' ? true : false,
+    // sameSite: 'strict',
+    httpOnly: false, //makes it impossible for the cookie to be modified in any way by the browser
   };
 
-  if (process.env.NODE_ENV === 'production') cookieOpt.secure = true;
-
+  // if (process.env.NODE_ENV === 'production') cookieOpt.secure = true;
   res.cookie('jwt', token, cookieOpt);
 
   user.password = undefined;
@@ -56,7 +57,6 @@ exports.login = catchAsync(async (req, res, next) => {
   if (!email || !password) {
     return next(new ErrorHandler('please provide email and password', 400));
   }
-
   //Check if  user exist && password is correct
   const user = await User.findOne({ email }).select('+password');
 
@@ -75,7 +75,10 @@ exports.protected = catchAsync(async (req, res, next) => {
     req.headers.authorization.startsWith('Bearer')
   ) {
     token = req.headers.authorization.split(' ')[1];
+  } else if (req.cookies.jwt) {
+    token = req.cookies.jwt;
   }
+
   if (!token)
     return next(
       new ErrorHandler(`You're not logged in Please login to get access.`, 401)

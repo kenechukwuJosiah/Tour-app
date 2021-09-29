@@ -2,4 +2,4 @@ node_modules
 pract.js
 lecture.txt
 .gitignore
-configuration.env
+config.env

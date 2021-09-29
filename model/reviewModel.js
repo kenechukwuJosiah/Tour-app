@@ -4,7 +4,7 @@ const Tour = require('./tourModel');
 const reviewSchema = new mongoose.Schema(
   {
     review: { type: String, required: [true, 'A review most not be empty'] },
-    ratings: {
+    rating: {
       type: Number,
       min: 1,
       max: 5,
@@ -67,7 +67,7 @@ reviewSchema.pre(/^find/, function (next) {
   // });
   this.populate({
     path: 'user',
-    select: 'name',
+    select: 'name photo',
   });
 
   next();

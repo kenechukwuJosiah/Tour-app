@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
@@ -5,17 +6,23 @@ const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
-
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const ErrorHandler = require('./util/errHandler');
 const errControler = require('./controlers/errorControler');
 const tourRouter = require('./routes/tourRouter');
 const userRouter = require('./routes/usersRouter');
 const reviewRouter = require('./routes/reviewRouter');
+const viewRouter = require('./routes/viewRoutes');
 
 const app = express();
 
-//1) Global middleware
+app.engine('pug', require('pug').__express);
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
 
+//1) Global middleware
+app.use(express.static(path.join(__dirname, 'public')));
 //set Security Http header
 app.use(helmet());
 
@@ -26,12 +33,15 @@ const limiter = rateLimit({
   message: 'Too many request from this IP, please try again in an hour!',
 });
 
+app.use(cors({ origin: true, credentials: true }));
+
 app.use('/api', limiter);
 
 console.log(process.env.NODE_ENV);
 
 //Body parser i.e reading data from the request body
 app.use(express.json({ limit: '10kb' }));
+app.use(cookieParser());
 
 //Data sanitization against NOSQl query injection
 app.use(mongoSanitize());
@@ -59,16 +69,17 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 //Serving static files
-app.use(express.static(`${__dirname}/public`));
+// app.use(express.static(`${__dirname}/public`));
 
 //Test middleware
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
-  // console.log(req.headers);
+  console.log(req.cookies);
   next();
 });
 
 // 3) Base Routes
+app.use('/', viewRouter);
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
