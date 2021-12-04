@@ -24,35 +24,59 @@ const handleJWTError = () =>
 const handleJWTExpirationError = () =>
   new ErrorHandler('Your token has expired! please log in again', 401);
 
-const devError = (err, res) => {
+const devError = (err, req, res) => {
   //Operational Error: expected errors
-  res.status(err.statusCode).json({
-    status: err.status,
-    error: err,
-    stack: err.stack,
-    message: err.message,
-  });
-};
-
-const prodError = (err, res) => {
-  //Operational Error: expected errors
-  if (err.isOperational) {
-    res.status(err.statusCode).json({
+  if (req.originalUrl.startsWith('/api')) {
+    return res.status(err.statusCode).json({
       status: err.status,
+      error: err,
+      stack: err.stack,
       message: err.message,
     });
-    // Programming Error: unexpected Error
-  } else {
+  }
+  console.error('ERROR💥', err);
+  //Rendered website
+  return res
+    .status(err.statusCode)
+    .render('error', { title: 'Something wrong', msg: err.message });
+};
+
+const prodError = (err, req, res) => {
+  //Operational Error: expected errors
+  if (req.originalUrl.startsWith('/api')) {
+    if (err.isOperational) {
+      return res.status(err.statusCode).json({
+        status: err.status,
+        message: err.message,
+      });
+      // Programming Error: unexpected Error
+    }
     // Log error
     console.error('ERROR 💥', err);
 
     // Sending Generic message
-    res.status(500).json({
+    return res.status(500).json({
       status: 'error',
       message: 'Something went wrong!!',
       error: err,
     });
   }
+
+  if (err.isOperational) {
+    return res.status(err.statusCode).render('error', {
+      title: 'Something went wrong',
+      msg: err.message,
+    });
+    // Programming Error: unexpected Error
+  }
+  // Log error
+  console.error('ERROR 💥', err);
+
+  // Sending Generic message
+  return res.status(err.statusCode).render('error', {
+    title: 'Something wrong',
+    msg: 'Please try again later',
+  });
 };
 
 module.exports = (err, req, res, next) => {
@@ -61,7 +85,7 @@ module.exports = (err, req, res, next) => {
   const production = process.env.NODE_ENV;
 
   if (process.env.NODE_ENV === 'development') {
-    devError(err, res);
+    devError(err, req, res);
   } else if (production) {
     let error = JSON.parse(JSON.stringify(err));
     console.log(error.name);
@@ -75,7 +99,7 @@ module.exports = (err, req, res, next) => {
     if (error.name === 'JsonWebTokenError') error = handleJWTError();
 
     if (err.name === 'TokenExpiredError') error = handleJWTExpirationError();
-    prodError(error, res);
+    prodError(error, req, res);
     console.log(error);
     console.log('Prod', error.massage);
   }

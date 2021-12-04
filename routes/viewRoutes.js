@@ -1,13 +1,23 @@
 const express = require('express');
-const { getOverview, getTour, login } = require('../controlers/viewsControler');
-const { protected } = require('../controlers/authControler');
+const {
+  getOverview,
+  getTour,
+  login,
+  getAccount,
+  updateUserData,
+} = require('../controlers/viewsControler');
+const { isLoggedIn, protected } = require('../controlers/authControler');
 
 const router = express.Router();
 
-router.get('/', getOverview);
+router.get('/', isLoggedIn, getOverview);
 
-router.get('/tour/:slug', protected, getTour);
+router.get('/login', isLoggedIn, login);
 
-router.get('/login', login);
+router.get('/tour/:slug', isLoggedIn, getTour);
+
+router.get('/me/:name', protected, getAccount);
+
+router.post('/submit-user-data', protected, updateUserData);
 
 module.exports = router;

@@ -11,6 +11,8 @@ const {
   getMonthlyPlan,
   getToursWithin,
   getDistances,
+  uploadTourImages,
+  resizeTourImages,
 } = require('../controlers/tourControler');
 const reviewRouter = require('./reviewRouter');
 
@@ -41,7 +43,13 @@ router.route('/top-cheap-courses').get(aliasTopCourse, getAllTours);
 router
   .route('/:id')
   .get(getTour)
-  .patch(protected, restrictTo('admin', 'lead-guide'), updateTour)
+  .patch(
+    protected,
+    restrictTo('admin', 'lead-guide'),
+    uploadTourImages,
+    resizeTourImages,
+    updateTour
+  )
   .delete(protected, restrictTo('admin', 'lead-guide'), deleteTour);
 
 // router

@@ -3,3 +3,4 @@ pract.js
 lecture.txt
 .gitignore
 config.env
+.cache

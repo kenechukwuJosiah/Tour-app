@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
     lowercase: true,
     validate: [validator.isEmail, 'Enter a valid email'],
   },
-  photo: String,
+  photo: { type: String, default: 'default.jpg' },
   password: {
     type: String,
     required: [true, 'Password required'],
@@ -75,11 +75,11 @@ userSchema.pre(/^find/, function (next) {
 // instance method is a method that is availble on all document of a particular collection.
 
 userSchema.methods.isPasswordChanged = function (JWTTimestam) {
-  const changedTimestamp = parseInt(
-    this.passwordChangedAt.getTime() / 1000,
-    10
-  );
   if (this.passwordChangedAt) {
+    const changedTimestamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10
+    );
     return JWTTimestam < changedTimestamp;
   }
   return false;

@@ -75,9 +75,17 @@ exports.createOne = (Model) =>
 exports.getOne = (Model, popOpt) =>
   catchAsync(async (req, res, next) => {
     let query = Model.findById(req.params.id);
+    console.log('REAChED');
+
+    res.cookie('cook', 'lksjdoislkdjslkdjslkdj', {
+      secure: false,
+      httpOnly: true,
+      maxAge: 3333000,
+    });
 
     if (popOpt) query = Model.findById(req.params.id).populate(popOpt);
     const doc = await query;
+
     if (!doc) {
       return next(
         new ErrorHandler('No doccument found with the ID entered', 404)

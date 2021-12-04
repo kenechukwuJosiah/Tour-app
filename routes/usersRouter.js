@@ -8,11 +8,14 @@ const {
   updateMe,
   deleteMe,
   getMe,
+  uploadUserPhoto,
+  resizeUserPhoto,
 } = require('../controlers/usersControler');
 
 const {
   signup,
   login,
+  logOut,
   forgetPassword,
   resetPassword,
   updatePassword,
@@ -24,6 +27,7 @@ const router = express.Router();
 
 router.post('/signup', signup);
 router.post('/login', login);
+router.get('/logout', logOut);
 router.post('/forgetpassword', forgetPassword);
 router.patch('/resetpassword/:token', resetPassword);
 
@@ -31,7 +35,7 @@ router.patch('/resetpassword/:token', resetPassword);
 router.use(protected);
 
 router.get('/me', getMe, getUser);
-router.patch('/updateme', updateMe);
+router.patch('/updateme', uploadUserPhoto, resizeUserPhoto, updateMe);
 router.patch('/updatepassword', updatePassword);
 router.delete('/deleteme', deleteMe);
 

@@ -3,10 +3,12 @@ header.header
     a.nav__el(href='/') All tours 
   .header__logo 
     img(src='/img/logo-white.png' alt='Natours log')
-  nav.nav.nav--user 
-    //-a.nav__el(href='#') My bookings 
-    a.nav__el(href='#')
-      //-img.nav__user-img(src='img/user.jpg' alt='User photo')
-      //-span Kenechukwu
-    a.nav__el(href='/login') Log in
-    a.nav__el.nav__el--cta(href="/signup") Sign up
+  nav.nav.nav--user
+    if user
+      a.nav__el.nav__el--logout Log out
+      a.nav__el(href=`/me/${user.name.split(' ').join('-')}`)
+        img.nav__user-img(src=`/img/users/${user.photo}` alt=`Photo of ${user.name}`)
+        span= user.name.split(' ')[0]
+    else
+      a.nav__el(href='/login') Log in
+      a.nav__el.nav__el--cta(href="/signup") Sign up

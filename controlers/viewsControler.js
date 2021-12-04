@@ -1,5 +1,7 @@
 const Tour = require('../model/tourModel');
+const User = require('../model/userModel');
 const catchAsync = require('../util/catchAsync');
+const ErrorHandler = require('../util/errHandler');
 
 exports.getOverview = catchAsync(async (req, res, next) => {
   // 1) Get tour data from collection
@@ -18,9 +20,11 @@ exports.getTour = catchAsync(async (req, res, next) => {
     path: 'reviews',
     fields: 'review rating user',
   });
+
+  if (!tour) return next(new ErrorHandler('Tour not found!', 404));
   //2)Build template
   // 3) Render template using data from 1)
-  res.status(200).render('tour', {
+  return res.status(200).render('tour', {
     title: `${tour.name} Tour`,
     tour,
   });
@@ -28,6 +32,28 @@ exports.getTour = catchAsync(async (req, res, next) => {
 
 exports.login = catchAsync(async (req, res, next) => {
   res.status(200).render('login', {
-    title: 'Login',
+    title: 'Login into your account',
+  });
+});
+
+exports.getAccount = catchAsync(async (req, res, next) => {
+  res.status(200).render('account', {
+    title: 'Your account',
+  });
+});
+
+exports.updateUserData = catchAsync(async (req, res, next) => {
+  const user = await User.findByIdAndUpdate(
+    req.user.id,
+    {
+      name: req.body.name,
+      email: req.body.email,
+    },
+    { new: true, runValidators: true }
+  );
+
+  res.status(200).render('account', {
+    title: 'Your account',
+    user,
   });
 });
