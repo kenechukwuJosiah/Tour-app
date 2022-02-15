@@ -75,7 +75,7 @@ exports.createOne = (Model) =>
 exports.getOne = (Model, popOpt) =>
   catchAsync(async (req, res, next) => {
     let query = Model.findById(req.params.id);
-    console.log('REAChED');
+    // console.log('REAChED');
 
     res.cookie('cook', 'lksjdoislkdjslkdjslkdj', {
       secure: false,

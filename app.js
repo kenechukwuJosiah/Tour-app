@@ -3,6 +3,8 @@ const express = require('express');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
+// const bcrypt = require('bcryptjs');
+const compression = require('compression');
 // const crypto = require('crypto');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
@@ -40,15 +42,15 @@ const limiter = rateLimit({
 
 app.use('/api', limiter);
 
-//Protects head
+// Protects head
 const noncejs = 'aced5c0b7ab3e5e6b0bfeedfdbef3f12';
 // const nonce = crypto.randomBytes(16).toString('hex');
 const nonceimg = 'c5d09af037061w8079f0d11290e0816f';
-const noncefont = 'c5d09af037061few37f0d11290e0816f';
-const noncestyle = 'c5d09af037061w8079f0d11290e0816f';
+// const noncefont = 'c5d09af037061few37f0d11290e0816f';
+// const noncestyle = 'c5d09af037061w8079f0d11290e0816f';
 app.use(helmet());
 app.use(helmet.referrerPolicy({ policy: 'same-origin' }));
-app.use(contentSecurityPolicy(noncejs, nonceimg, noncefont, noncestyle));
+app.use(contentSecurityPolicy(noncejs, nonceimg));
 
 console.log(process.env.NODE_ENV);
 
@@ -76,6 +78,16 @@ app.use(
     ],
   })
 );
+
+app.use(compression());
+
+// const func = async () => {
+//   const password = await bcrypt.hash('pass1234', 12);
+
+//   console.log('PASSWORD', password);
+// };
+
+// func();
 
 //Development logging
 if (process.env.NODE_ENV === 'development') {

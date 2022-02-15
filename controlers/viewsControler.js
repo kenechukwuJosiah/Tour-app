@@ -1,7 +1,9 @@
 const Tour = require('../model/tourModel');
 const User = require('../model/userModel');
+const Booking = require('../model/BookingModel');
 const catchAsync = require('../util/catchAsync');
 const ErrorHandler = require('../util/errHandler');
+const factory = require('../controlers/handlerFactroy');
 
 exports.getOverview = catchAsync(async (req, res, next) => {
   // 1) Get tour data from collection
@@ -23,6 +25,7 @@ exports.getTour = catchAsync(async (req, res, next) => {
 
   if (!tour) return next(new ErrorHandler('Tour not found!', 404));
   //2)Build template
+  // console.log(tour);
   // 3) Render template using data from 1)
   return res.status(200).render('tour', {
     title: `${tour.name} Tour`,
@@ -56,4 +59,15 @@ exports.updateUserData = catchAsync(async (req, res, next) => {
     title: 'Your account',
     user,
   });
+});
+
+exports.getMyTours = catchAsync(async (req, res, next) => {
+  //Find all bookings
+  const bookings = await Booking.find({ user: req.user.id });
+
+  //Find tours with the retured Ids
+  const tourIDs = bookings.map((el) => el.tour);
+  const tours = await Tour.find({ _id: { $in: tourIDs } });
+
+  res.status(200).render('overview', { title: 'My Tours', tours });
 });

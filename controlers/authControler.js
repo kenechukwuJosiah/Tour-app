@@ -90,7 +90,6 @@ exports.protected = catchAsync(async (req, res, next) => {
   } else if (req.cookies.jwt) {
     token = req.cookies.jwt;
   }
-
   if (!token)
     return next(
       new ErrorHandler(`You're not logged in Please login to get access.`, 401)
@@ -98,8 +97,10 @@ exports.protected = catchAsync(async (req, res, next) => {
 
   //verification of token
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_PKEY);
+  // console.log(decoded);
   //check if user still exist
   const currentUser = await User.findById(decoded.id);
+  // console.log(currentUser);
   if (!currentUser)
     return next(new ErrorHandler('This user no longer exist', 401));
   //check if user changed password after the token was issued

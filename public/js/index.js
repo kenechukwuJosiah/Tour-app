@@ -59,9 +59,10 @@ if (formPasswordSettings)
     document.getElementById('password-confirm').value = '';
   });
 
-if (bookBtn)
+if (bookBtn) {
   bookBtn.addEventListener('click', (e) => {
     e.target.testContent = 'Processing...';
-    const { tourId } = e.target.dataset;
-    bookTour(tourId);
+    const { tourid } = e.target.dataset;
+    bookTour(tourid);
   });
+}

@@ -10,7 +10,7 @@ export const updateSettings = async (data, type) => {
         ? '/api/v1/users/updatepassword'
         : '/api/v1/users/updateme';
 
-    console.log(url);
+    // console.log(url);
     const res = await axios.patch(url, data);
 
     if (res.data.status === 'success')

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const fs = require('fs');
 const dotenv = require('dotenv');
 
-dotenv.config({ path: './config.env' });
+dotenv.config({ path: '../../config.env' });
 
 const Tour = require('../../model/tourModel');
 const User = require('../../model/userModel');
@@ -12,6 +12,7 @@ const Review = require('../../model/reviewModel');
 //   '<PASSWORD>',
 //   process.env.DATABASE_PASSWORD
 // );
+console.log(process.env.DATABASE_LOCAL);
 
 mongoose
   .connect(process.env.DATABASE_LOCAL, {
